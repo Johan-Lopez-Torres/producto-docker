@@ -12,8 +12,11 @@ services:
       - laravel_network
     volumes:
       - ./env/msv-finanzas/.env:/var/www/html/.env
+      
     depends_on:
       - db1
+    restart: unless-stopped
+
  
 
  # Microservicio 2
@@ -28,21 +31,17 @@ services:
       - laravel_network
     volumes:
       - ./env/msv-pagos/.env:/var/www/html/.env
-    environment:
-      - DB_HOST=db1
-      - DB_PORT=3306
-      - DB_DATABASE=instituto
-      - DB_USERNAME=root
-      - DB_PASSWORD=
     depends_on:
       - db1
+    restart: unless-stopped
+
 
 
   # Microservicio 3
   microservicio-finanzas:
     build:
       context: ./microservicios/Gestion_finanzas
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  
     container_name: msv-finanzas
     ports:
       - "8088:8000"
@@ -50,16 +49,10 @@ services:
       - laravel_network
     volumes:
       - ./env/msv-finanzas/.env:/var/www/html/.env
-    environment:
-      - DB_HOST=db1
-      - DB_PORT=3306
-      - DB_DATABASE=instituto
-      - DB_USERNAME=root
-      - DB_PASSWORD=
-      - GREETING=hola
-
     depends_on:
       - db1
+    restart: unless-stopped
+
 
 
   # Base de datos para Service1 (MySQL)
@@ -76,6 +69,8 @@ services:
       - ./init-scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
+    restart: always
+
 
 networks:
   laravel_network:
